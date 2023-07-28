@@ -1,15 +1,12 @@
 #include QMK_KEYBOARD_H
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT_barobord(
-      _______,         _______,      _______,      _______,      _______,      _______,    _______,      _______,      _______,      _______,
-      _______,         0,            1,            2,            3,            13,         12,           11,           10,           _______,
-      _______,         4,            5,            6,            7,            17,         16,           15,           14,           _______,
-      _______,         _______,      _______,      8,            9,            19,         18,           _______,      _______,      _______,
-                                                                 _______,      _______  // These are for the rotary encoders
-    ),
+    [0] = LAYOUT_split_2x4_2(
+        0,            1,            2,            3,            13,         12,           11,           10,
+        4,            5,            6,            7,            17,         16,           15,           14,
+                                    8,            9,            19,         18,
+    )
 };
-
 
 static uint16_t state;
 uint16_t start = 0;
@@ -49,6 +46,7 @@ static void process(uint16_t val) {
         case n: V(N)
         case s: V(S)
         case r: V(R)
+
         case e|t: V(H)
         case o|a: V(L)
         case i|n: V(Y)
@@ -81,7 +79,7 @@ static void process(uint16_t val) {
         default: v=0;
     }
     switch(v){
-        case 0: return;
+        case 0: tap_code16(inner?KC_SPC:(outer?KC_BSPC:KC_NO)); break;
         case KC_A...KC_Z: 
             if(inner) {
                 tap_code16(S(v)); 
@@ -90,7 +88,7 @@ static void process(uint16_t val) {
             } else {
                 tap_code16(v);
             }
-            return;
+            break;
         case KC_MINS: tap_code16(inner?KC_UNDS:(outer?KC_PERC:v)); break;
         case KC_SLSH: tap_code16(inner?KC_BSLS:(outer?KC_PIPE:v)); break;
         case KC_QUOT: tap_code16(inner?KC_DQT:(outer?KC_GRV:v)); break;
